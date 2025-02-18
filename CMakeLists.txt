@@ -27,27 +27,27 @@ set(HEADERS
 # Add as static library
 add_library(ImGui STATIC
         ${HEADERS}
-        ${SOURCES})
+        ${SOURCES}
+)
 
-if(WASM)
-    target_compile_definitions(${target_name} PRIVATE EMSCRIPTEN_USE_EMBEDDED_GLFW3=1)
-endif()
-
-# Define variable for include directories
-set(IMGUI_INCLUDE_DIRS 
+# Add include directories
+target_include_directories(ImGui
+PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/backends
 )
 
-# Define variable for link libraries
-set(IMGUI_LIBRARIES ImGui glfw OpenGL::GL)
+# Link libraries
+target_link_libraries(ImGui
+PUBLIC
+    glfw
+    OpenGL::GL
+)
 
 # Export variables
-set(IMGUI_INCLUDE_DIRS ${IMGUI_INCLUDE_DIRS} PARENT_SCOPE)
-set(IMGUI_LIBRARIES ${IMGUI_LIBRARIES} PARENT_SCOPE)
+set(IMGUI_LIBRARIES ImGui PARENT_SCOPE)
 
-# Add include directories
-target_include_directories(ImGui PUBLIC ${IMGUI_INCLUDE_DIRS})
+if(WASM)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE EMSCRIPTEN_USE_EMBEDDED_GLFW3=1)
+endif()
 
-# Link libraries
-target_link_libraries(ImGui PUBLIC glfw OpenGL::GL)
